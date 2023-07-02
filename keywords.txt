@@ -1,0 +1,24 @@
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+SerialCAN	KEYWORD1
+Frame	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+send	KEYWORD2
+receive	KEYWORD2
+encode	KEYWORD2
+getFaultReason	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
