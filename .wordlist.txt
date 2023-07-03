@@ -1,1 +1,14 @@
 Söderlund
+CRC
+crc
+DLC
+dlc
+nBytes
+param
+tparam
+pre
+initializer
+SerialCAN
+SerialBus
+HardwareSerial
+streamObject
