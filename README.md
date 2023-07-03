@@ -1,6 +1,6 @@
 # CAN over Serial for Arduino
 
-[![arduino-library-badge](https://www.ardu-badge.com/badge/Fabrik2D.svg?)](https://www.ardu-badge.com/SerialCAN)
+[![arduino-library-badge](https://www.ardu-badge.com/badge/SerialCAN.svg?)](https://www.ardu-badge.com/SerialCAN)
 ![C++](https://img.shields.io/badge/Langauge-C++-blue.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://github.com/henriksod/Arduino_CANOverSerial/actions/workflows/test_runner.yml/badge.svg)](https://github.com/henriksod/Arduino_CANOverSerial/actions/workflows/test_runner.yml)
