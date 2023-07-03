@@ -11,43 +11,81 @@
 
 #include <assert.h>
 #include "Arduino.h"
-#include "Frame.h"
+#include "Frame.hpp"
 
 #define __ASSERT_USE_STDERR
-#define m_assert(expr, msg) assert(( (void)(msg), (expr) ))
 
 namespace serial_can
 {
 
+/**
+ * SerialCAN class for CAN communication over Serial bus.
+ */
 class SerialCAN
 {
   public:
+    /**
+     * Reason for a fault in the SerialCAN class.
+     */
     enum fault_reason {
-        none,
-        timeout,
-        no_incoming_data,
-        crc_mismatch,
-        missing_end_delimeter
+        none,                   /**< No fault. */
+        timeout,                /**< Timeout occurred. */
+        no_incoming_data,       /**< No incoming data. */
+        crc_mismatch,           /**< CRC mismatch. */
+        missing_end_delimeter    /**< Missing end delimiter. */
     };
 
+    /**
+     * Constructor for SerialCAN class.
+     * @param streamObject The HardwareSerial object for serial communication.
+     */
     SerialCAN(HardwareSerial& streamObject) : _streamRef{streamObject}, _fault_reason{none} {}
 
+
+    /**
+     * Initializes the SerialCAN communication.
+     * @param baud_rate The baud rate for serial communication.
+     */
     void begin(uint32_t baud_rate);
+
+    /**
+     * Sends a CAN frame over the SerialCAN bus.
+     * @param outgoing_frame The outgoing CAN frame to be sent.
+     * @param timestamp The timestamp of the CAN frame.
+     */
     void send(Frame &outgoing_frame, const uint32_t timestamp);
+
+    /**
+     * Receives a CAN frame from the SerialCAN bus.
+     * @param incoming_frame The incoming CAN frame to be received.
+     * @param timeout_ms The timeout in milliseconds for receiving the frame.
+     * @return True if a frame was received successfully, false otherwise.
+     */
     bool receive(Frame &incoming_frame, unsigned long timeout_ms);
 
+    /**
+     * Get the reason for the fault in the SerialCAN class.
+     * @return The fault reason.
+     */
     fault_reason getFaultReason(void) { return _fault_reason; }
 
   private:
-    uint8_t can_frame_buffer[19] = {};
-    fault_reason _fault_reason = none;
-    HardwareSerial& _streamRef;
-    bool _has_begun = false;
-    
+    uint8_t can_frame_buffer[19] = {};  /**< Buffer for the CAN frame. */
+    fault_reason _fault_reason = none; /**< Reason for a fault in the SerialCAN class. */
+    HardwareSerial& _streamRef;        /**< Reference to the HardwareSerial object. */
+    bool _has_begun = false;           /**< Flag indicating if SerialCAN has been initialized. */
+
+    /**
+     * Calculates the CRC8 value for a given message.
+     * @param message The message for which to calculate the CRC8 value.
+     * @param nBytes The number of bytes in the message.
+     * @return The CRC8 value.
+     */
     uint8_t getCRC8(uint8_t const message[], int nBytes);
 };
 
 constexpr uint8_t crcTable[256] = {
+    // CRC8 lookup table
     0x00, 0x07, 0x0e, 0x09, 0x1c, 0x1b, 0x12, 0x15,
     0x38, 0x3f, 0x36, 0x31, 0x24, 0x23, 0x2a, 0x2d,
     0x70, 0x77, 0x7e, 0x79, 0x6c, 0x6b, 0x62, 0x65,
@@ -85,6 +123,6 @@ constexpr uint8_t crcTable[256] = {
 constexpr char* assert_msg_not_initialized_ =
     "SerialCAN has not been initialized with begin().";
 
-}
+}  // namespace serial_can
 
-#endif
+#endif  /* SERIAL_CAN_H */
