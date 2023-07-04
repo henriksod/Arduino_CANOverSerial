@@ -30,7 +30,7 @@
 #include <string>
 #include <assert.h>
 #include "Arduino.h"
-#include "Utils.h"
+#include "Utils.hpp"
 
 #define __ASSERT_USE_STDERR
 
