@@ -12,3 +12,9 @@ SerialCAN
 SerialBus
 HardwareSerial
 streamObject
+sublicense
+soderlund
+henrik
+gmail
+NONINFRINGEMENT
+MERCHANTABILITY
