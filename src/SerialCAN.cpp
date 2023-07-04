@@ -70,7 +70,7 @@ bool SerialCAN::receive(Frame *incoming_frame, uint32_t timeout_ms) {
             bool got_delimeter_byte = false;
             for (int i = 0; i < 18; i++) {
                 time_since_byte = millis();
-                while(!_streamRef.available()) {
+                while (!_streamRef.available()) {
                     time_delta = millis() - time_since_byte;
                     if (time_delta > timeout_ms) {
                         _fault_reason = timeout;
@@ -94,7 +94,8 @@ bool SerialCAN::receive(Frame *incoming_frame, uint32_t timeout_ms) {
 
                 if (i > 4 && i < 9) {
                     incoming_frame->arbitration_id = incoming_frame->arbitration_id >> 8;
-                    incoming_frame->arbitration_id = incoming_frame->arbitration_id | (data_byte << 24);
+                    incoming_frame->arbitration_id =
+                        incoming_frame->arbitration_id | (data_byte << 24);
                 }
 
                 // Parse payload

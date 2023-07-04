@@ -36,7 +36,7 @@ class SerialCAN {
      * Constructor for SerialCAN class.
      * @param streamObject The HardwareSerial object for serial communication.
      */
-    explicit SerialCAN(HardwareSerial& streamObject) :
+    explicit SerialCAN(const HardwareSerial& streamObject) :
         _streamRef{streamObject}, _fault_reason{none} {}
 
 

@@ -102,9 +102,9 @@ class Frame {
     void Frame::encode(const char* string) {
         size_t string_len = strlen(string);
 
-        assert( ("Maximum allowed number of bytes is 6 since use_crc is true.",
-            (use_crc && string_len <= 6) || !use_crc) );
-        assert( ("Maximum allowed number of bytes is 8.", string_len <= 8) );
+        assert(("Maximum allowed number of bytes is 6 since use_crc is true.",
+            (use_crc && string_len <= 6) || !use_crc));
+        assert(("Maximum allowed number of bytes is 8.", string_len <= 8));
 
         size_t current_start_byte = 0;
         for (int i = 0; i < string_len; i++)
