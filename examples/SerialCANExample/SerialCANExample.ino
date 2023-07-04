@@ -4,7 +4,7 @@
 using namespace serial_can; 
 
 // Serial CAN communication
-SerialCAN serialCAN{Serial};
+SerialCAN serialCAN{&Serial};
 
 // An example CAN frame {arbitration_id, dlc, use_crc}
 Frame example_frame{0xFF, 6, true};

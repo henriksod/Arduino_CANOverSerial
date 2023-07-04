@@ -30,7 +30,7 @@ using serial_can::SerialCAN;
 using serial_can::Frame;
 
 void SerialCAN::begin(uint32_t baud_rate) {
-    _streamRef.begin(baud_rate);
+    _streamRef->begin(baud_rate);
     _has_begun = true;
 }
 
@@ -74,7 +74,7 @@ void SerialCAN::send(Frame *outgoing_frame, uint32_t timestamp) {
 
     // Send Frame
     for (int i = 0; i <= 10 + outgoing_frame->dlc; i++) {
-        _streamRef.write(can_frame_buffer[i]);
+        _streamRef->write(can_frame_buffer[i]);
     }
 
     outgoing_frame->counter++;
@@ -86,8 +86,8 @@ bool SerialCAN::receive(Frame *incoming_frame, uint32_t timeout_ms) {
     uint32_t time_since_byte;
     uint32_t time_delta;
 
-    if (_streamRef.available()) {
-        data_byte = _streamRef.read();
+    if (_streamRef->available()) {
+        data_byte = _streamRef->read();
 
         // Check for frame start byte
         if (data_byte == 0xAA) {
@@ -96,7 +96,7 @@ bool SerialCAN::receive(Frame *incoming_frame, uint32_t timeout_ms) {
             bool got_delimeter_byte = false;
             for (int i = 0; i < 18; i++) {
                 time_since_byte = millis();
-                while (!_streamRef.available()) {
+                while (!_streamRef->available()) {
                     time_delta = millis() - time_since_byte;
                     if (time_delta > timeout_ms) {
                         _fault_reason = timeout;
@@ -105,7 +105,7 @@ bool SerialCAN::receive(Frame *incoming_frame, uint32_t timeout_ms) {
                 }
 
                 // Read data
-                data_byte = _streamRef.read();
+                data_byte = _streamRef->read();
                 can_frame_buffer[i+1] = data_byte;
 
                 // Parse Header

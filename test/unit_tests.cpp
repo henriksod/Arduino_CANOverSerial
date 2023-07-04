@@ -112,7 +112,7 @@ unittest(test_serial_can_send)
   DummySerial dummySerial;
 
   // Serial CAN communication
-  SerialCAN serialCAN{dummySerial};  
+  SerialCAN serialCAN{&dummySerial};  
   // An example CAN frame {arbitration_id, dlc, use_crc}
   Frame example_frame{0xFF, 6, false};
 
@@ -150,7 +150,7 @@ unittest(test_serial_can_receive)
   DummySerial dummySerial;
 
   // Serial CAN communication
-  SerialCAN serialCAN{dummySerial};  
+  SerialCAN serialCAN{&dummySerial};  
   // An example CAN frame {arbitration_id, dlc, use_crc}
   Frame example_frame{0x00, 6, false};
 

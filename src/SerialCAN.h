@@ -55,7 +55,7 @@ class SerialCAN {
      * Constructor for SerialCAN class.
      * @param streamObject The HardwareSerial object for serial communication.
      */
-    explicit SerialCAN(const HardwareSerial& streamObject) :
+    explicit SerialCAN(HardwareSerial *streamObject) :
         _streamRef{streamObject}, _fault_reason{none} {}
 
 
@@ -89,7 +89,7 @@ class SerialCAN {
  private:
     uint8_t can_frame_buffer[19] = {};  /**< Buffer for the CAN frame. */
     fault_reason _fault_reason = none; /**< Reason for a fault in the SerialCAN class. */
-    const HardwareSerial& _streamRef;        /**< Reference to the HardwareSerial object. */
+    HardwareSerial* _streamRef;        /**< Pointer to the HardwareSerial object. */
     bool _has_begun = false;           /**< Flag indicating if SerialCAN has been initialized. */
 
     /**
