@@ -1,13 +1,12 @@
+// Copyright 2023 Henrik Söderlund
+
 /*  
     CAN communication over Serial bus
-    
     Compatible with python-can SerialBus
-
-    Author: Henrik Söderlund, 2022
 */
 
-#ifndef SERIAL_CAN_H
-#define SERIAL_CAN_H
+#ifndef SRC_SERIALCAN_H_
+#define SRC_SERIALCAN_H_
 
 #include <assert.h>
 #include "Arduino.h"
@@ -15,15 +14,13 @@
 
 #define __ASSERT_USE_STDERR
 
-namespace serial_can
-{
+namespace serial_can {
 
 /**
  * SerialCAN class for CAN communication over Serial bus.
  */
-class SerialCAN
-{
-  public:
+class SerialCAN {
+ public:
     /**
      * Reason for a fault in the SerialCAN class.
      */
@@ -39,7 +36,8 @@ class SerialCAN
      * Constructor for SerialCAN class.
      * @param streamObject The HardwareSerial object for serial communication.
      */
-    SerialCAN(HardwareSerial& streamObject) : _streamRef{streamObject}, _fault_reason{none} {}
+    explicit SerialCAN(HardwareSerial& streamObject) :
+        _streamRef{streamObject}, _fault_reason{none} {}
 
 
     /**
@@ -53,7 +51,7 @@ class SerialCAN
      * @param outgoing_frame The outgoing CAN frame to be sent.
      * @param timestamp The timestamp of the CAN frame.
      */
-    void send(Frame &outgoing_frame, const uint32_t timestamp);
+    void send(Frame *outgoing_frame, const uint32_t timestamp);
 
     /**
      * Receives a CAN frame from the SerialCAN bus.
@@ -61,7 +59,7 @@ class SerialCAN
      * @param timeout_ms The timeout in milliseconds for receiving the frame.
      * @return True if a frame was received successfully, false otherwise.
      */
-    bool receive(Frame &incoming_frame, unsigned long timeout_ms);
+    bool receive(Frame *incoming_frame, uint32_t timeout_ms);
 
     /**
      * Get the reason for the fault in the SerialCAN class.
@@ -69,7 +67,7 @@ class SerialCAN
      */
     fault_reason getFaultReason(void) { return _fault_reason; }
 
-  private:
+ private:
     uint8_t can_frame_buffer[19] = {};  /**< Buffer for the CAN frame. */
     fault_reason _fault_reason = none; /**< Reason for a fault in the SerialCAN class. */
     HardwareSerial& _streamRef;        /**< Reference to the HardwareSerial object. */
@@ -125,4 +123,4 @@ constexpr char* assert_msg_not_initialized_ =
 
 }  // namespace serial_can
 
-#endif  /* SERIAL_CAN_H */
+#endif  // SRC_SERIALCAN_H_

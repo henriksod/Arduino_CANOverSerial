@@ -1,30 +1,27 @@
+// Copyright 2023 Henrik Söderlund
+
 /*  
     CAN communication over Serial bus
-    
     Compatible with python-can SerialBus
-
-    Author: Henrik Söderlund, 2022
 */
 
-#ifndef SERIAL_CAN_FRAME_H
-#define SERIAL_CAN_FRAME_H
+#ifndef SRC_FRAME_HPP_
+#define SRC_FRAME_HPP_
 
 #include <assert.h>
-#include <string.h>
+#include <string>
 #include "Arduino.h"
 #include "ArxTypeTraits.h"
 
 #define __ASSERT_USE_STDERR
 
-namespace serial_can
-{
+namespace serial_can {
 
 /**
  * Represents a CAN frame for communication over a Serial bus.
  */
-class Frame
-{
-  public:
+class Frame {
+ public:
     /**
      * CAN frame arbitration/message ID.
      */
@@ -40,7 +37,7 @@ class Frame
      * Warning: Using CRC will limit the effective payload size to 6 bytes.
      */
     bool use_crc;
-    
+
     /**
      * Timestamp of the CAN frame (only used for incoming frames).
      */
@@ -64,9 +61,8 @@ class Frame
      * @param _use_crc Flag indicating whether to use CRC calculations.
      * @pre The maximum allowed DLC is 8.
      */
-    Frame(
-      uint32_t _arbitration_id, uint8_t _dlc, bool _use_crc
-    ) : arbitration_id{_arbitration_id}, dlc{_dlc}, use_crc{_use_crc} {
+    Frame(uint32_t _arbitration_id, uint8_t _dlc, bool _use_crc) :
+      arbitration_id{_arbitration_id}, dlc{_dlc}, use_crc{_use_crc} {
         assert(("Maximum allowed DLC is 8.", dlc <= 8));
     }
 
@@ -83,14 +79,13 @@ class Frame
     void Frame::encode(arx::std::initializer_list<T> data_list) {
         const size_t T_size = sizeof(T);
 
-        assert( ("Maximum allowed number of bytes is 6 since use_crc is true.",
-            (use_crc && data_list.size() * T_size <= 6) || !use_crc) );
-        assert( ("Maximum allowed number of bytes is 8.",
-            data_list.size() * T_size <= 8) );
+        assert(("Maximum allowed number of bytes is 6 since use_crc is true.",
+            (use_crc && data_list.size() * T_size <= 6) || !use_crc));
+        assert(("Maximum allowed number of bytes is 8.",
+            data_list.size() * T_size <= 8));
 
         size_t current_start_byte = 0;
-        for( auto elem : data_list )
-        {
+        for (auto elem : data_list) {
             packData_<T>(elem, current_start_byte);
             current_start_byte += T_size;
         }
@@ -112,11 +107,11 @@ class Frame
         assert( ("Maximum allowed number of bytes is 8.", string_len <= 8) );
 
         size_t current_start_byte = 0;
-        for( int i = 0; i < string_len; i++ )
+        for (int i = 0; i < string_len; i++)
             packData_<char>(string[i], current_start_byte++);
     }
 
-  private:
+ private:
     /**
      * Packs the given data into the payload starting from the specified byte index.
      *
@@ -134,4 +129,4 @@ class Frame
 
 }  // namespace serial_can
 
-#endif  /* SERIAL_CAN_FRAME_H */
+#endif  // SRC_FRAME_HPP_
