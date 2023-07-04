@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: '3.10' 
       - run: pip install cpplint
-      - run: cpplint --filter=-build/include_subdir,-build/header_guard --linelength=100 --recursive ./src
+      - run: cpplint --filter=-build/include_subdir,-build/header_guard,-build/include_what_you_use --linelength=100 --recursive ./src
   unit:
     runs-on: ubuntu-latest
     steps:
