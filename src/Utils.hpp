@@ -27,6 +27,8 @@
 #ifndef SERIALCAN_SRC_UTILS_HPP_
 #define SERIALCAN_SRC_UTILS_HPP_
 
+#include "Arduino.h"
+
 namespace serial_can::utils {
 
 template<class T>

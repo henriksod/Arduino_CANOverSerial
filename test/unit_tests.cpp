@@ -29,7 +29,6 @@
 // assertNAN(arg);                                 // isnan(a)
 // assertNotNAN(arg);                              // !isnan(a)
 
-#include <cstddef>
 #include "Arduino.h"
 #include "HardwareSerial.h"
 #include "SerialCAN.h"
