@@ -26,7 +26,8 @@
 
 #include "SerialCAN.h"
 
-using serial_can::SerialCAN, serial_can::Frame;
+using serial_can::SerialCAN;
+using serial_can::Frame;
 
 void SerialCAN::begin(uint32_t baud_rate) {
     _streamRef.begin(baud_rate);

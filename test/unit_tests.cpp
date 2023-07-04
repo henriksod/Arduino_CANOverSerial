@@ -29,6 +29,7 @@
 // assertNAN(arg);                                 // isnan(a)
 // assertNotNAN(arg);                              // !isnan(a)
 
+#include <cstddef>
 #include "Arduino.h"
 #include "HardwareSerial.h"
 #include "SerialCAN.h"
@@ -120,6 +121,7 @@ unittest(test_serial_can_send)
   example_frame.encode("test");
 
   // Dispatch the message with a given timestamp
+  serialCAN.begin();
   serialCAN.send(example_frame, 1);
 
   assertEqual(0xAA, dummySerial.dummy_buffer[0]);
@@ -153,6 +155,7 @@ unittest(test_serial_can_receive)
   // An example CAN frame {arbitration_id, dlc, use_crc}
   Frame example_frame{0x00, 6, false};
 
+  serialCAN.begin();
   assertEqual(0xAA, serialCAN.receive(example_frame, 1));
   assertEqual(0x00, serialCAN.receive(example_frame, 1));
   assertEqual(0x00, serialCAN.receive(example_frame, 1));
