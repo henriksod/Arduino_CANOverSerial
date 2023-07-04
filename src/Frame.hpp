@@ -27,8 +27,8 @@
 #ifndef SERIALCAN_SRC_FRAME_HPP_
 #define SERIALCAN_SRC_FRAME_HPP_
 
-#include <string>
 #include <assert.h>
+#include <string>
 #include "Arduino.h"
 #include "Utils.hpp"
 
