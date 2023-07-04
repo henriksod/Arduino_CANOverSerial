@@ -19,10 +19,12 @@ jobs:
   cpplint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
-    - run: pip install cpplint
-    - run: cpplint --linelength=100 --recursive ./src
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+      - run: pip install cpplint
+      - run: cpplint --linelength=100 --recursive ./src
   unit:
     runs-on: ubuntu-latest
     steps:
