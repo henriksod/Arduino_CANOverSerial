@@ -34,8 +34,9 @@ void SerialCAN::begin(uint32_t baud_rate) {
     _has_begun = true;
 }
 
-void SerialCAN::send(Frame *outgoing_frame, const uint32_t timestamp) {
-    assert((assert_msg_not_initialized_, _has_begun));
+void SerialCAN::send(Frame *outgoing_frame, uint32_t timestamp) {
+    // Check if SerialCAN has not been initialized with begin().
+    assert(_has_begun);
 
     // Start byte
     can_frame_buffer[0] = 0xAA;

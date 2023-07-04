@@ -27,12 +27,12 @@
 #ifndef SERIALCAN_SRC_FRAME_HPP_
 #define SERIALCAN_SRC_FRAME_HPP_
 
+#define __ASSERT_USE_STDERR
+
 #include <assert.h>
 #include <string.h>
 #include "Arduino.h"
 #include "Utils.hpp"
-
-#define __ASSERT_USE_STDERR
 
 namespace serial_can {
 
@@ -82,7 +82,8 @@ class Frame {
      */
     Frame(uint32_t _arbitration_id, uint8_t _dlc, bool _use_crc) :
       arbitration_id{_arbitration_id}, dlc{_dlc}, use_crc{_use_crc} {
-        assert(("Maximum allowed DLC is 8.", dlc <= 8));
+        // Maximum allowed DLC is 8.
+        assert(dlc <= 8);
     }
 
     /**
@@ -95,13 +96,13 @@ class Frame {
      * @pre The maximum allowed number of bytes is 8 when use_crc is false.
      */
     template<typename T>
-    void Frame::encode(utils::initializer_list<T> data_list) {
+    void encode(utils::initializer_list<T> data_list) {
         const size_t T_size = sizeof(T);
 
-        assert(("Maximum allowed number of bytes is 6 since use_crc is true.",
-            (use_crc && data_list.size() * T_size <= 6) || !use_crc));
-        assert(("Maximum allowed number of bytes is 8.",
-            data_list.size() * T_size <= 8));
+        // Maximum allowed number of bytes is 6 if use_crc is true
+        assert((use_crc && data_list.size() * T_size <= 6) || !use_crc);
+        // Maximum allowed number of bytes is 8 if use_crc is false
+        assert(data_list.size() * T_size <= 8);
 
         size_t current_start_byte = 0;
         for (auto elem : data_list) {
@@ -118,15 +119,16 @@ class Frame {
      * @pre The maximum allowed number of bytes is 6 when use_crc is true.
      * @pre The maximum allowed number of bytes is 8 when use_crc is false.
      */
-    void Frame::encode(const char* string) {
+    void encode(const char* string) {
         size_t string_len = strlen(string);
 
-        assert(("Maximum allowed number of bytes is 6 since use_crc is true.",
-            (use_crc && string_len <= 6) || !use_crc));
-        assert(("Maximum allowed number of bytes is 8.", string_len <= 8));
+        // Maximum allowed number of bytes is 6 if use_crc is true
+        assert((use_crc && string_len <= 6) || !use_crc);
+        // Maximum allowed number of bytes is 8 if use_crc is false
+        assert(string_len <= 8);
 
         size_t current_start_byte = 0;
-        for (int i = 0; i < string_len; i++)
+        for (size_t i = 0; i < string_len; i++)
             packData_<char>(string[i], current_start_byte++);
     }
 
@@ -139,7 +141,7 @@ class Frame {
      * @tparam T The type of the data.
      */
     template<typename T>
-    void Frame::packData_(T data, int start_byte) {
+    void packData_(T data, int start_byte) {
         for (int i = 0; i < sizeof(data); i++) {
             payload[i+start_byte] = data >> (i * 8);
         }

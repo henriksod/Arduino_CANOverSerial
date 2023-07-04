@@ -24,7 +24,7 @@ void loop() {
     example_frame.encode("test");
 
     // Dispatch the message with a given timestamp
-    serialCAN.send(example_frame, timestamp);
+    serialCAN.send(&example_frame, timestamp);
 
     delay(100);
 }

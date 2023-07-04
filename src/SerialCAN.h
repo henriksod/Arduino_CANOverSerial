@@ -27,11 +27,11 @@
 #ifndef SERIALCAN_SRC_SERIALCAN_H_
 #define SERIALCAN_SRC_SERIALCAN_H_
 
+#define __ASSERT_USE_STDERR
+
 #include <assert.h>
 #include "Utils.hpp"
 #include "Frame.hpp"
-
-#define __ASSERT_USE_STDERR
 
 namespace serial_can {
 
@@ -70,7 +70,7 @@ class SerialCAN {
      * @param outgoing_frame The outgoing CAN frame to be sent.
      * @param timestamp The timestamp of the CAN frame.
      */
-    void send(Frame *outgoing_frame, const uint32_t timestamp);
+    void send(Frame *outgoing_frame, uint32_t timestamp);
 
     /**
      * Receives a CAN frame from the SerialCAN bus.
@@ -136,9 +136,6 @@ constexpr uint8_t crcTable[256] = {
     0xde, 0xd9, 0xd0, 0xd7, 0xc2, 0xc5, 0xcc, 0xcb,
     0xe6, 0xe1, 0xe8, 0xef, 0xfa, 0xfd, 0xf4, 0xf3
 };
-
-constexpr char* assert_msg_not_initialized_ =
-    "SerialCAN has not been initialized with begin().";
 
 }  // namespace serial_can
 
