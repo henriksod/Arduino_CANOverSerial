@@ -24,13 +24,13 @@
  *
  **********************************************************************************************/
 
-#ifndef SRC_FRAME_HPP_
-#define SRC_FRAME_HPP_
+#ifndef SERIALCAN_SRC_FRAME_HPP_
+#define SERIALCAN_SRC_FRAME_HPP_
 
-#include <assert.h>
 #include <string>
+#include <assert.h>
 #include "Arduino.h"
-#include "ArxTypeTraits.h"
+#include "Utils.h"
 
 #define __ASSERT_USE_STDERR
 
@@ -95,7 +95,7 @@ class Frame {
      * @pre The maximum allowed number of bytes is 8 when use_crc is false.
      */
     template<typename T>
-    void Frame::encode(arx::std::initializer_list<T> data_list) {
+    void Frame::encode(utils::initializer_list<T> data_list) {
         const size_t T_size = sizeof(T);
 
         assert(("Maximum allowed number of bytes is 6 since use_crc is true.",
@@ -148,4 +148,4 @@ class Frame {
 
 }  // namespace serial_can
 
-#endif  // SRC_FRAME_HPP_
+#endif  // SERIALCAN_SRC_FRAME_HPP_

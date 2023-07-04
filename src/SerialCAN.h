@@ -24,11 +24,11 @@
  *
  **********************************************************************************************/
 
-#ifndef SRC_SERIALCAN_H_
-#define SRC_SERIALCAN_H_
+#ifndef SERIALCAN_SRC_SERIALCAN_H_
+#define SERIALCAN_SRC_SERIALCAN_H_
 
 #include <assert.h>
-#include "Arduino.h"
+#include "Utils.hpp"
 #include "Frame.hpp"
 
 #define __ASSERT_USE_STDERR
@@ -142,4 +142,4 @@ constexpr char* assert_msg_not_initialized_ =
 
 }  // namespace serial_can
 
-#endif  // SRC_SERIALCAN_H_
+#endif  // SERIALCAN_SRC_SERIALCAN_H_

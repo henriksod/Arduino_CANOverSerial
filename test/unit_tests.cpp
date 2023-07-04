@@ -29,15 +29,11 @@
 // assertNAN(arg);                                 // isnan(a)
 // assertNotNAN(arg);                              // !isnan(a)
 
-
-#include <ArduinoUnitTests.h>
-
 #include "Arduino.h"
 #include "HardwareSerial.h"
 #include "SerialCAN.h"
 
-using namespace serial_can; 
-
+using serial_can::SerialCAN, serial_can::Frame; 
 
 class DummySerial : public HardwareSerial
 {
