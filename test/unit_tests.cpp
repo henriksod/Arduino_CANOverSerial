@@ -91,7 +91,7 @@ unittest_teardown()
 unittest(test_frame_string)
 {
   // An example CAN frame {arbitration_id, dlc, use_crc}
-  Frame example_frame{0xFF, 6, true};
+  Frame example_frame{0xFF, 6, Frame::no_crc};
 
   // Encode the variables into the frame payload
   example_frame.encode("test");
@@ -106,7 +106,7 @@ unittest(test_frame_string)
 unittest(test_frame_value)
 {
   // An example CAN frame {arbitration_id, dlc, use_crc}
-  Frame example_frame{0xFF, 6, true};
+  Frame example_frame{0xFF, 6, Frame::no_crc};
 
   // Encode the variables into the frame payload
   example_frame.encode<uint16_t>({
@@ -185,7 +185,7 @@ unittest(test_serial_can_receive)
   assertEqual(0x08, example_frame.payload[7]);
 
   dummySerial.reset();
-  dummySerial.dummy_buffer[18] = 0x00
+  dummySerial.dummy_buffer[18] = 0x00;
 
   assertEqual(true, serialCAN.receive(&example_frame, 100));
   assertEqual(SerialCAN::missing_end_delimeter, serialCAN.getFaultReason());
@@ -237,7 +237,7 @@ unittest(test_serial_can_receive_with_crc)
   assertEqual(SerialCAN::crc_mismatch, serialCAN.getFaultReason());
   
   dummySerial.reset();
-  dummySerial.dummy_buffer[16] = 0xD8
+  dummySerial.dummy_buffer[16] = 0xD8;
 
   assertEqual(true, serialCAN.receive(&example_frame, 100));
   assertEqual(SerialCAN::none, serialCAN.getFaultReason());
