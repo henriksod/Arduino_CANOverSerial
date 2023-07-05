@@ -86,12 +86,6 @@ class SerialCAN {
      */
     fault_reason getFaultReason(void) { return _fault_reason; }
 
- private:
-    uint8_t can_frame_buffer[19] = {};  /**< Buffer for the CAN frame. */
-    HardwareSerial* _streamRef;        /**< Pointer to the HardwareSerial object. */
-    fault_reason _fault_reason = none; /**< Reason for a fault in the SerialCAN class. */
-    bool _has_begun = false;           /**< Flag indicating if SerialCAN has been initialized. */
-
     /**
      * Calculates the CRC8 value for a given message.
      * @param message The message for which to calculate the CRC8 value.
@@ -99,6 +93,12 @@ class SerialCAN {
      * @return The CRC8 value.
      */
     uint8_t getCRC8(uint8_t const message[], int nBytes);
+
+ private:
+    uint8_t can_frame_buffer[19] = {};  /**< Buffer for the CAN frame. */
+    HardwareSerial* _streamRef;        /**< Pointer to the HardwareSerial object. */
+    fault_reason _fault_reason = none; /**< Reason for a fault in the SerialCAN class. */
+    bool _has_begun = false;           /**< Flag indicating if SerialCAN has been initialized. */
 };
 
 constexpr uint8_t crcTable[256] = {
