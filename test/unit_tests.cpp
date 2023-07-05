@@ -150,9 +150,7 @@ unittest(test_serial_can_send)
   assertEqual('t', dummySerial.dummy_buffer[13]);
   assertEqual(0x00, dummySerial.dummy_buffer[14]);
   assertEqual(0x00, dummySerial.dummy_buffer[15]);
-  assertEqual(0x00, dummySerial.dummy_buffer[16]);
-  assertEqual(0x00, dummySerial.dummy_buffer[17]);
-  assertEqual(0xBB, dummySerial.dummy_buffer[18]);
+  assertEqual(0xBB, dummySerial.dummy_buffer[16]);
 }
 
 
@@ -171,7 +169,7 @@ unittest(test_serial_can_receive)
 
   assertEqual(0xFFFFFFFF, example_frame.arbitration_id);
   assertEqual(8, example_frame.dlc);
-  assertEqual(1, example_frame.timestamp);
+  assertEqual(16777216, example_frame.timestamp);
   assertEqual(0x01, example_frame.payload[0]);
   assertEqual(0x02, example_frame.payload[1]);
   assertEqual(0x03, example_frame.payload[2]);
