@@ -103,7 +103,9 @@ unittest(test_frame_value)
   Frame example_frame{0xFF, 6, true};
 
   // Encode the variables into the frame payload
-  example_frame.encode<uint16_t>({0x1515, 0xE2E2});
+  example_frame.encode<uint16_t>({
+    static_cast<uint16_t>(0x1515),
+    static_cast<uint16_t>(0xE2E2)});
 
   assertEqual(0x15, example_frame.payload[0]);
   assertEqual(0x15, example_frame.payload[1]);
