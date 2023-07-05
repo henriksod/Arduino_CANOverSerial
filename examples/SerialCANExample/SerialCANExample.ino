@@ -20,8 +20,16 @@ void setup() {
 void loop() {
     timestamp += 1;
 
-    // Encode the variables into the frame payload
+    // Encode a string into the frame payload
     example_frame.encode("test");
+
+    // Dispatch the message with a given timestamp
+    serialCAN.send(&example_frame, timestamp);
+
+    // Encode data into the frame payload
+    example_frame.encode<uint8_t>({
+        static_cast<uint8_t>(0x01),
+        static_cast<uint8_t>(0x02)});
 
     // Dispatch the message with a given timestamp
     serialCAN.send(&example_frame, timestamp);
