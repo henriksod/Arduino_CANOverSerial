@@ -245,7 +245,7 @@ unittest(test_serial_can_receive_with_crc)
   assertEqual(SerialCAN::none, serialCAN.getFaultReason());
 
   fprintf(stderr, "getCRC8 == %02X\n",
-    getCRC8(example_frame.payload, example_frame.dlc-1));
+    serialCAN.getCRC8(example_frame.payload, example_frame.dlc-1));
 
   assertEqual(0xD8, example_frame.crc);
   assertEqual(0, example_frame.counter);
