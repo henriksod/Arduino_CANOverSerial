@@ -36,6 +36,8 @@
 
 namespace serial_can {
 
+constexpr size_t MAX_DLC = 8;
+
 /**
  * Represents a CAN frame for communication over a Serial bus.
  */
@@ -73,7 +75,7 @@ class Frame {
     /**
      * Stored CAN frame payload.
      */
-    uint8_t payload[8] = {};
+    uint8_t payload[MAX_DLC] = {};
 
     /**
      * Counter used for CRC calculations.
@@ -88,14 +90,15 @@ class Frame {
     /**
      * Constructs a new Frame object.
      */
-    Frame() : arbitration_id{0x00}, dlc{8}, use_crc{crc_settings::no_crc} {}
+    Frame() : arbitration_id{0x00}, dlc{MAX_DLC}, use_crc{crc_settings::no_crc} {}
 
     /**
      * Constructs a new Frame object.
      *
      * @param _use_crc Enum indicating whether to use CRC calculations.
      */
-    explicit Frame(crc_settings _use_crc) : arbitration_id{0x00}, dlc{8}, use_crc{_use_crc} {}
+    explicit Frame(crc_settings _use_crc) :
+        arbitration_id{0x00}, dlc{MAX_DLC}, use_crc{_use_crc} {}
 
      /**
      * Constructs a new Frame object.
@@ -107,7 +110,7 @@ class Frame {
     Frame(uint32_t _arbitration_id, uint8_t _dlc) :
       arbitration_id{_arbitration_id}, dlc{_dlc}, use_crc{crc_settings::no_crc} {
         // Maximum allowed DLC is 8.
-        assert(dlc <= 8);
+        assert(dlc <= MAX_DLC);
     }
 
     /**
@@ -121,7 +124,7 @@ class Frame {
     Frame(uint32_t _arbitration_id, uint8_t _dlc, crc_settings _use_crc) :
       arbitration_id{_arbitration_id}, dlc{_dlc}, use_crc{_use_crc} {
         // Maximum allowed DLC is 8.
-        assert(dlc <= 8);
+        assert(dlc <= MAX_DLC);
     }
 
     /**
@@ -140,7 +143,10 @@ class Frame {
         // Maximum allowed number of bytes is 6 if use_crc is crc8
         assert((use_crc && data_list.size() * T_size <= 6) || !use_crc);
         // Maximum allowed number of bytes is 8 if use_crc is no_crc
-        assert(data_list.size() * T_size <= 8);
+        assert(data_list.size() * T_size <= MAX_DLC);
+
+        // Clear the payload before populating with new data
+        clearPayload_();
 
         size_t current_start_byte = 0;
         for (auto elem : data_list) {
@@ -163,7 +169,10 @@ class Frame {
         // Maximum allowed number of bytes is 6 if use_crc is crc8
         assert((use_crc && string_len <= 6) || !use_crc);
         // Maximum allowed number of bytes is 8 if use_crc is no_crc
-        assert(string_len <= 8);
+        assert(string_len <= MAX_DLC);
+
+        // Clear the payload before populating with new data
+        clearPayload_();
 
         size_t current_start_byte = 0;
         for (size_t i = 0; i < string_len; i++)
@@ -183,6 +192,14 @@ class Frame {
         for (int i = 0; i < sizeof(data); i++) {
             payload[i+start_byte] = data >> (i * 8);
         }
+    }
+
+    /**
+     * Clears the payload data and sets all elements to zero.
+     */
+    void clearPayload_() {
+        for (int i = 0; i < MAX_DLC; i++)
+            payload[i] = 0;
     }
 };
 
