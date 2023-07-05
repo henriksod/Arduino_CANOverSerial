@@ -49,9 +49,8 @@ class initializer_list {
 /**
  * Used for testing.
  */
-class DummySerial : public HardwareSerial
-{
-  public:
+class DummySerial : public HardwareSerial {
+ public:
     static const size_t buffer_size = 19;
 
     size_t out_buffer_idx = 0;
@@ -63,7 +62,7 @@ class DummySerial : public HardwareSerial
       0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xBB
     };
 
-    void begin(unsigned long baud) { }
+    void begin(uint32_t baud) { }
     int available(void) override { return in_buffer_idx < buffer_size; }
     int peek(void) override { return 0; }
     int availableForWrite(void) override { return 0; }
@@ -75,7 +74,7 @@ class DummySerial : public HardwareSerial
     }
     size_t write(uint8_t val) override {
       dummy_buffer[out_buffer_idx++] = val;
-      out_buffer_idx = out_buffer_idx >= buffer_size ? 0 : out_buffer_idx; 
+      out_buffer_idx = out_buffer_idx >= buffer_size ? 0 : out_buffer_idx;
       return 0;
     }
 };
