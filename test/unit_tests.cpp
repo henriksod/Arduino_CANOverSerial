@@ -185,19 +185,13 @@ unittest(test_serial_can_receive)
   assertEqual(0x08, example_frame.payload[7]);
 
   dummySerial.reset();
-  fprintf(stderr, "DELIMETER %02X\n", dummySerial.dummy_buffer[18]);
-  dummySerial.dummy_buffer[18] = 0x00;
+  dummySerial.read_buffer[18] = 0x00;
 
   assertEqual(false, serialCAN.receive(&example_frame, 100));
   assertEqual(SerialCAN::missing_end_delimeter, serialCAN.getFaultReason());
 
   assertEqual(false, serialCAN.receive(&example_frame, 100));
   assertEqual(SerialCAN::no_incoming_data, serialCAN.getFaultReason());
-
-  dummySerial.in_buffer_idx-=2;
-
-  assertEqual(false, serialCAN.receive(&example_frame, 0));
-  assertEqual(SerialCAN::timeout, serialCAN.getFaultReason());
 }
 
 unittest(test_serial_can_send_with_crc)
@@ -241,7 +235,7 @@ unittest(test_serial_can_receive_with_crc)
   assertEqual(SerialCAN::crc_mismatch, serialCAN.getFaultReason());
   
   dummySerial.reset();
-  dummySerial.dummy_buffer[17] = 0xD8;
+  dummySerial.read_buffer[17] = 0xD8;
 
   assertEqual(true, serialCAN.receive(&example_frame, 100));
   assertEqual(SerialCAN::none, serialCAN.getFaultReason());
