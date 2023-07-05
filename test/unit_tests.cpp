@@ -167,7 +167,7 @@ unittest(test_serial_can_receive)
 
   // Receive a dummy frame
   serialCAN.begin(460800);  // Does nothing here
-  serialCAN.receive(&example_frame, 1)
+  serialCAN.receive(&example_frame, 1);
 
   assertEqual(0xFFFFFFFF, example_frame.arbitration_id);
   assertEqual(8, example_frame.dlc);
