@@ -34,7 +34,39 @@
 
 using serial_can::SerialCAN;
 using serial_can::Frame; 
-using serial_can::utils::DummySerial;
+
+/**
+ * Used for testing.
+ */
+class DummySerial : public HardwareSerial {
+ public:
+    static const size_t buffer_size = 19;
+
+    size_t out_buffer_idx = 0;
+    uint8_t dummy_buffer[buffer_size] = {};
+
+    size_t in_buffer_idx = 0;
+    uint8_t read_buffer[buffer_size] = {
+      0xAA, 0x00, 0x00, 0x00, 0x01, 0x08, 0xFF, 0xFF, 0xFF, 0xFF,
+      0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xBB
+    };
+
+    void begin(uint32_t baud) { static_cast<void>(baud); }
+    int available(void) override { return in_buffer_idx < buffer_size; }
+    int peek(void) override { return 0; }
+    int availableForWrite(void) { return 0; }
+    void flush(void) override { return; }
+    int read(void) override {
+      if (available())
+        return read_buffer[in_buffer_idx++];
+      return 0;
+    }
+    size_t write(uint8_t val) override {
+      dummy_buffer[out_buffer_idx++] = val;
+      out_buffer_idx = out_buffer_idx >= buffer_size ? 0 : out_buffer_idx;
+      return 0;
+    }
+};
 
 unittest_setup()
 {
