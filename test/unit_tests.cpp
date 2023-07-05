@@ -53,7 +53,7 @@ class DummySerial : public HardwareSerial {
       0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xBB
     };
 
-    DummySerial() : HardwareSerial("", "", 0) {}
+    DummySerial() : HardwareSerial(Serial) {}
 
     void begin(uint32_t baud) { static_cast<void>(baud); }
     int available(void) override { return in_buffer_idx < buffer_size; }
