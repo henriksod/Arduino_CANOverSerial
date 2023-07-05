@@ -56,6 +56,10 @@ class DummySerial : public HardwareSerial {
     DummySerial() : HardwareSerial(Serial) {}
 
     void begin(unsigned long baud) { static_cast<void>(baud); }
+    void begin(unsigned long a, uint8_t b) {
+      static_cast<void>(a);
+      static_cast<void>(b);
+    };
     int available(void) override { return in_buffer_idx < buffer_size; }
     int peek(void) override { return 0; }
     int availableForWrite(void) { return 0; }
