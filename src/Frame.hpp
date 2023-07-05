@@ -1,5 +1,5 @@
 /**********************************************************************************************
- * SerialCAN, CAN communication over Serial bus - Version 0.1.0
+ * SerialCAN, CAN communication over Serial bus - Version 1.0.0
  * by Henrik Söderlund <henrik.a.soderlund@gmail.com>
  *
  * Copyright (c) 2023 Henrik Söderlund
@@ -89,6 +89,13 @@ class Frame {
      * Constructs a new Frame object.
      */
     Frame() : arbitration_id{0x00}, dlc{8}, use_crc{crc_settings::no_crc} {}
+
+    /**
+     * Constructs a new Frame object.
+     *
+     * @param _use_crc Enum indicating whether to use CRC calculations.
+     */
+    Frame(crc_settings _use_crc) : arbitration_id{0x00}, dlc{8}, use_crc{_use_crc} {}
 
      /**
      * Constructs a new Frame object.

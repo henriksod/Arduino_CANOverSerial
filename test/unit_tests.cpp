@@ -187,15 +187,15 @@ unittest(test_serial_can_receive)
   dummySerial.reset();
   dummySerial.dummy_buffer[18] = 0x00;
 
-  assertEqual(true, serialCAN.receive(&example_frame, 100));
+  assertEqual(false, serialCAN.receive(&example_frame, 100));
   assertEqual(SerialCAN::missing_end_delimeter, serialCAN.getFaultReason());
 
-  assertEqual(true, serialCAN.receive(&example_frame, 100));
+  assertEqual(false, serialCAN.receive(&example_frame, 100));
   assertEqual(SerialCAN::no_incoming_data, serialCAN.getFaultReason());
 
-  dummySerial.reset();
+  dummySerial.in_buffer_idx--;
 
-  assertEqual(true, serialCAN.receive(&example_frame, 0));
+  assertEqual(false, serialCAN.receive(&example_frame, 0));
   assertEqual(SerialCAN::timeout, serialCAN.getFaultReason());
 }
 
@@ -215,10 +215,12 @@ unittest(test_serial_can_send_with_crc)
   serialCAN.begin(460800);  // Does nothing here
   serialCAN.send(&example_frame, 1);
 
+  assertEqual(0, dummySerial.dummy_buffer[14]);
   assertEqual(0x26, dummySerial.dummy_buffer[15]);
 
   serialCAN.send(&example_frame, 1);
 
+  assertEqual(1, dummySerial.dummy_buffer[14]);
   assertEqual(0x21, dummySerial.dummy_buffer[15]);
 }
 
@@ -229,11 +231,11 @@ unittest(test_serial_can_receive_with_crc)
   // Serial CAN communication
   SerialCAN serialCAN{&dummySerial};  
   // An example CAN frame {arbitration_id, dlc, use_crc}
-  Frame example_frame{};
+  Frame example_frame{Frame::crc8};
 
   // Receive a dummy frame
   serialCAN.begin(460800);  // Does nothing here
-  assertEqual(true, serialCAN.receive(&example_frame, 100));
+  assertEqual(false, serialCAN.receive(&example_frame, 100));
   assertEqual(SerialCAN::crc_mismatch, serialCAN.getFaultReason());
   
   dummySerial.reset();

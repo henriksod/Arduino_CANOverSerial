@@ -1,5 +1,5 @@
 /**********************************************************************************************
- * SerialCAN, CAN communication over Serial bus - Version 0.1.0
+ * SerialCAN, CAN communication over Serial bus - Version 1.0.0
  * by Henrik Söderlund <henrik.a.soderlund@gmail.com>
  *
  * Copyright (c) 2023 Henrik Söderlund
