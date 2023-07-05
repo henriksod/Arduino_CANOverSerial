@@ -65,6 +65,7 @@ class DummySerial : public HardwareSerial {
     int availableForWrite(void) { return 0; }
     void flush(void) override { return; }
     int read(void) override {
+      delay(1);
       if (available())
         return read_buffer[in_buffer_idx++];
       return 0;
@@ -74,6 +75,7 @@ class DummySerial : public HardwareSerial {
       out_buffer_idx = out_buffer_idx >= buffer_size ? 0 : out_buffer_idx;
       return 0;
     }
+    void reset(void) { out_buffer_idx = 0; in_buffer_idx = 0; }
 };
 
 unittest_setup()
@@ -125,7 +127,7 @@ unittest(test_serial_can_send)
   // Serial CAN communication
   SerialCAN serialCAN{&dummySerial};  
   // An example CAN frame {arbitration_id, dlc, use_crc}
-  Frame example_frame{0xFF, 6, false};
+  Frame example_frame{0xFF, 6, Frame::no_crc};
 
   // Encode the text into the frame payload
   example_frame.encode("test");
@@ -161,15 +163,18 @@ unittest(test_serial_can_receive)
   // Serial CAN communication
   SerialCAN serialCAN{&dummySerial};  
   // An example CAN frame {arbitration_id, dlc, use_crc}
-  Frame example_frame{0x00, 6, false};
+  Frame example_frame{};
 
   // Receive a dummy frame
   serialCAN.begin(460800);  // Does nothing here
-  serialCAN.receive(&example_frame, 1);
+  assertEqual(true, serialCAN.receive(&example_frame, 100));
+  assertEqual(SerialCAN::none, serialCAN.getFaultReason());
 
   assertEqual(0xFFFFFFFF, example_frame.arbitration_id);
   assertEqual(8, example_frame.dlc);
   assertEqual(16777216, example_frame.timestamp);
+  assertEqual(0, example_frame.counter);
+  assertEqual(0, example_frame.crc);
   assertEqual(0x01, example_frame.payload[0]);
   assertEqual(0x02, example_frame.payload[1]);
   assertEqual(0x03, example_frame.payload[2]);
@@ -178,6 +183,67 @@ unittest(test_serial_can_receive)
   assertEqual(0x06, example_frame.payload[5]);
   assertEqual(0x07, example_frame.payload[6]);
   assertEqual(0x08, example_frame.payload[7]);
+
+  dummySerial.reset();
+  dummySerial.dummy_buffer[18] = 0x00
+
+  assertEqual(true, serialCAN.receive(&example_frame, 100));
+  assertEqual(SerialCAN::missing_end_delimeter, serialCAN.getFaultReason());
+
+  assertEqual(true, serialCAN.receive(&example_frame, 100));
+  assertEqual(SerialCAN::no_incoming_data, serialCAN.getFaultReason());
+
+  dummySerial.reset();
+
+  assertEqual(true, serialCAN.receive(&example_frame, 0));
+  assertEqual(SerialCAN::timeout, serialCAN.getFaultReason());
+}
+
+unittest(test_serial_can_send_with_crc)
+{
+  DummySerial dummySerial;
+
+  // Serial CAN communication
+  SerialCAN serialCAN{&dummySerial};  
+  // An example CAN frame {arbitration_id, dlc, use_crc}
+  Frame example_frame{0xFF, 6, Frame::crc8};
+
+  // Encode the text into the frame payload
+  example_frame.encode("test");
+
+  // Dispatch the message with a given timestamp
+  serialCAN.begin(460800);  // Does nothing here
+  serialCAN.send(&example_frame, 1);
+
+  assertEqual(0x26, dummySerial.dummy_buffer[15]);
+
+  serialCAN.send(&example_frame, 1);
+
+  assertEqual(0x21, dummySerial.dummy_buffer[15]);
+}
+
+unittest(test_serial_can_receive_with_crc)
+{
+  DummySerial dummySerial;
+
+  // Serial CAN communication
+  SerialCAN serialCAN{&dummySerial};  
+  // An example CAN frame {arbitration_id, dlc, use_crc}
+  Frame example_frame{};
+
+  // Receive a dummy frame
+  serialCAN.begin(460800);  // Does nothing here
+  assertEqual(true, serialCAN.receive(&example_frame, 100));
+  assertEqual(SerialCAN::crc_mismatch, serialCAN.getFaultReason());
+  
+  dummySerial.reset();
+  dummySerial.dummy_buffer[16] = 0xD8
+
+  assertEqual(true, serialCAN.receive(&example_frame, 100));
+  assertEqual(SerialCAN::none, serialCAN.getFaultReason());
+
+  assertEqual(0xD8, example_frame.crc);
+  assertEqual(0, example_frame.counter);
 }
 
 unittest_main()

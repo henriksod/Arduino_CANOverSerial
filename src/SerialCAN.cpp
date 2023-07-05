@@ -54,8 +54,8 @@ void SerialCAN::send(Frame *outgoing_frame, uint32_t timestamp) {
         can_frame_buffer[i+6] = outgoing_frame->arbitration_id >> (i * 8);
     }
 
-    // Calculate CRC if use_crc is true
-    if (outgoing_frame->use_crc == true) {
+    // Calculate CRC if use_crc is Frame::crc8
+    if (outgoing_frame->use_crc == Frame::crc8) {
         // Set counter in next last byte in payload
         outgoing_frame->payload[outgoing_frame->dlc-2] = outgoing_frame->counter;
 
@@ -138,13 +138,14 @@ bool SerialCAN::receive(Frame *incoming_frame, uint32_t timeout_ms) {
             }
 
             if (got_delimeter_byte == true) {
-                // Check crc match if use_crc is true
-                if (incoming_frame->use_crc == true) {
+                // Check crc match if use_crc is Frame::crc8
+                if (incoming_frame->use_crc == Frame::crc8) {
                     // Store counter
                     incoming_frame->counter = incoming_frame->payload[incoming_frame->dlc-2];
 
                     // Calculate CRC, excluding CRC byte in payload
                     uint8_t crc_value = getCRC8(incoming_frame->payload, incoming_frame->dlc-1);
+                    incoming_frame->crc = crc_value;
 
                     // Check if CRC is a match between calculated and payload CRC
                     if (crc_value != incoming_frame->payload[incoming_frame->dlc-1]) {

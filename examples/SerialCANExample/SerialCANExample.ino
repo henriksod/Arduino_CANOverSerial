@@ -7,7 +7,7 @@ using namespace serial_can;
 SerialCAN serialCAN{&Serial};
 
 // An example CAN frame {arbitration_id, dlc, use_crc}
-Frame example_frame{0xFF, 6, true};
+Frame example_frame{0xFF, 6, Frame::crc8};
 
 uint32_t timestamp = 0;
 

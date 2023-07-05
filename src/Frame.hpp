@@ -42,6 +42,14 @@ namespace serial_can {
 class Frame {
  public:
     /**
+     * CRC checksum settings.
+     */
+    enum crc_settings {
+        no_crc,                   /**< Do not use CRC */
+        crc8                /**< Use CRC8 as checksum */
+    };
+
+    /**
      * CAN frame arbitration/message ID.
      */
     uint32_t arbitration_id;
@@ -53,9 +61,9 @@ class Frame {
 
     /**
      * Indicates whether to activate CRC calculations for end-to-end protection.
-     * Warning: Using CRC will limit the effective payload size to 6 bytes.
+     * Warning: Using CRC will limit the effective payload size to max 6 bytes.
      */
-    bool use_crc;
+    crc_settings use_crc;
 
     /**
      * Timestamp of the CAN frame (only used for incoming frames).
@@ -73,14 +81,37 @@ class Frame {
     uint8_t counter = {};
 
     /**
+     * Counter used for CRC calculations.
+     */
+    uint8_t crc = {};
+
+    /**
+     * Constructs a new Frame object.
+     */
+    Frame() : arbitration_id{0x00}, dlc{8}, use_crc{crc_settings::no_crc} {}
+
+     /**
      * Constructs a new Frame object.
      *
      * @param _arbitration_id The CAN frame arbitration ID.
      * @param _dlc The CAN frame DLC.
-     * @param _use_crc Flag indicating whether to use CRC calculations.
      * @pre The maximum allowed DLC is 8.
      */
-    Frame(uint32_t _arbitration_id, uint8_t _dlc, bool _use_crc) :
+    Frame(uint32_t _arbitration_id, uint8_t _dlc) :
+      arbitration_id{_arbitration_id}, dlc{_dlc}, use_crc{crc_settings::no_crc} {
+        // Maximum allowed DLC is 8.
+        assert(dlc <= 8);
+    }
+
+    /**
+     * Constructs a new Frame object.
+     *
+     * @param _arbitration_id The CAN frame arbitration ID.
+     * @param _dlc The CAN frame DLC.
+     * @param _use_crc Enum indicating whether to use CRC calculations.
+     * @pre The maximum allowed DLC is 8.
+     */
+    Frame(uint32_t _arbitration_id, uint8_t _dlc, crc_settings _use_crc) :
       arbitration_id{_arbitration_id}, dlc{_dlc}, use_crc{_use_crc} {
         // Maximum allowed DLC is 8.
         assert(dlc <= 8);
@@ -92,16 +123,16 @@ class Frame {
      *
      * @param data_list The initializer list of data elements to encode and pack.
      * @tparam T The type of data elements.
-     * @pre The maximum allowed number of bytes is 6 when use_crc is true.
-     * @pre The maximum allowed number of bytes is 8 when use_crc is false.
+     * @pre The maximum allowed number of bytes is 6 when use_crc is crc8.
+     * @pre The maximum allowed number of bytes is 8 when use_crc is no_crc.
      */
     template<typename T>
     void encode(std::initializer_list<T> data_list) {
         const size_t T_size = sizeof(T);
 
-        // Maximum allowed number of bytes is 6 if use_crc is true
+        // Maximum allowed number of bytes is 6 if use_crc is crc8
         assert((use_crc && data_list.size() * T_size <= 6) || !use_crc);
-        // Maximum allowed number of bytes is 8 if use_crc is false
+        // Maximum allowed number of bytes is 8 if use_crc is no_crc
         assert(data_list.size() * T_size <= 8);
 
         size_t current_start_byte = 0;
@@ -116,15 +147,15 @@ class Frame {
      * The length of the string must not exceed 6 bytes if CRC is enabled, or 8 bytes otherwise.
      *
      * @param string The string to encode and pack.
-     * @pre The maximum allowed number of bytes is 6 when use_crc is true.
-     * @pre The maximum allowed number of bytes is 8 when use_crc is false.
+     * @pre The maximum allowed number of bytes is 6 when use_crc is crc8.
+     * @pre The maximum allowed number of bytes is 8 when use_crc is no_crc.
      */
     void encode(const char* string) {
         size_t string_len = strlen(string);
 
-        // Maximum allowed number of bytes is 6 if use_crc is true
+        // Maximum allowed number of bytes is 6 if use_crc is crc8
         assert((use_crc && string_len <= 6) || !use_crc);
-        // Maximum allowed number of bytes is 8 if use_crc is false
+        // Maximum allowed number of bytes is 8 if use_crc is no_crc
         assert(string_len <= 8);
 
         size_t current_start_byte = 0;
