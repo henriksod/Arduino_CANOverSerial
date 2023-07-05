@@ -88,8 +88,8 @@ class SerialCAN {
 
  private:
     uint8_t can_frame_buffer[19] = {};  /**< Buffer for the CAN frame. */
-    fault_reason _fault_reason = none; /**< Reason for a fault in the SerialCAN class. */
     HardwareSerial* _streamRef;        /**< Pointer to the HardwareSerial object. */
+    fault_reason _fault_reason = none; /**< Reason for a fault in the SerialCAN class. */
     bool _has_begun = false;           /**< Flag indicating if SerialCAN has been initialized. */
 
     /**

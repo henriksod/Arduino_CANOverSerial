@@ -30,7 +30,8 @@
 #include "Arduino.h"
 #include "HardwareSerial.h"
 
-namespace serial_can::utils {
+namespace serial_can {
+namespace utils {
 
 template<class T>
 class initializer_list {
@@ -79,6 +80,7 @@ class DummySerial : public HardwareSerial
     }
 };
 
-}  // namespace serial_can::utils
+}  // namespace utils
+}  // namespace serial_can
 
 #endif  // SERIALCAN_SRC_UTILS_HPP_
