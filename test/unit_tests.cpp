@@ -50,7 +50,7 @@ class DummySerial : public HardwareSerial {
     size_t in_buffer_idx = 0;
     uint8_t read_buffer[buffer_size] = {
       0xAA, 0x00, 0x00, 0x00, 0x01, 0x08, 0xFF, 0xFF, 0xFF, 0xFF,
-      0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xBB
+      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0xBB
     };
 
     DummySerial() : HardwareSerial(Serial) {}
@@ -135,15 +135,15 @@ unittest(test_serial_can_send)
   serialCAN.send(&example_frame, 1);
 
   assertEqual(0xAA, dummySerial.dummy_buffer[0]);
-  assertEqual(0x00, dummySerial.dummy_buffer[1]);
+  assertEqual(0x01, dummySerial.dummy_buffer[1]);
   assertEqual(0x00, dummySerial.dummy_buffer[2]);
   assertEqual(0x00, dummySerial.dummy_buffer[3]);
-  assertEqual(0x01, dummySerial.dummy_buffer[4]);
+  assertEqual(0x00, dummySerial.dummy_buffer[4]);
   assertEqual(0x06, dummySerial.dummy_buffer[5]);
-  assertEqual(0x00, dummySerial.dummy_buffer[6]);
+  assertEqual(0xFF, dummySerial.dummy_buffer[6]);
   assertEqual(0x00, dummySerial.dummy_buffer[7]);
   assertEqual(0x00, dummySerial.dummy_buffer[8]);
-  assertEqual(0xFF, dummySerial.dummy_buffer[9]);
+  assertEqual(0x00, dummySerial.dummy_buffer[9]);
   assertEqual('t', dummySerial.dummy_buffer[10]);
   assertEqual('e', dummySerial.dummy_buffer[11]);
   assertEqual('s', dummySerial.dummy_buffer[12]);
@@ -165,26 +165,21 @@ unittest(test_serial_can_receive)
   // An example CAN frame {arbitration_id, dlc, use_crc}
   Frame example_frame{0x00, 6, false};
 
+  // Receive a dummy frame
   serialCAN.begin(460800);  // Does nothing here
-  assertEqual(0xAA, serialCAN.receive(&example_frame, 1));
-  assertEqual(0x00, serialCAN.receive(&example_frame, 1));
-  assertEqual(0x00, serialCAN.receive(&example_frame, 1));
-  assertEqual(0x00, serialCAN.receive(&example_frame, 1));
-  assertEqual(0x01, serialCAN.receive(&example_frame, 1));
-  assertEqual(0x08, serialCAN.receive(&example_frame, 1));
-  assertEqual(0xFF, serialCAN.receive(&example_frame, 1));
-  assertEqual(0xFF, serialCAN.receive(&example_frame, 1));
-  assertEqual(0xFF, serialCAN.receive(&example_frame, 1));
-  assertEqual(0xFF, serialCAN.receive(&example_frame, 1));
-  assertEqual(0xF0, serialCAN.receive(&example_frame, 1));
-  assertEqual(0x00, serialCAN.receive(&example_frame, 1));
-  assertEqual(0x00, serialCAN.receive(&example_frame, 1));
-  assertEqual(0x00, serialCAN.receive(&example_frame, 1));
-  assertEqual(0x00, serialCAN.receive(&example_frame, 1));
-  assertEqual(0x00, serialCAN.receive(&example_frame, 1));
-  assertEqual(0x00, serialCAN.receive(&example_frame, 1));
-  assertEqual(0x00, serialCAN.receive(&example_frame, 1));
-  assertEqual(0xBB, serialCAN.receive(&example_frame, 1));
+  serialCAN.receive(&example_frame, 1)
+
+  assertEqual(0xFFFFFFFF, example_frame.arbitration_id);
+  assertEqual(8, example_frame.dlc);
+  assertEqual(1, example_frame.timestamp);
+  assertEqual(0x01, example_frame.payload[0]);
+  assertEqual(0x02, example_frame.payload[1]);
+  assertEqual(0x03, example_frame.payload[2]);
+  assertEqual(0x04, example_frame.payload[3]);
+  assertEqual(0x05, example_frame.payload[4]);
+  assertEqual(0x06, example_frame.payload[5]);
+  assertEqual(0x07, example_frame.payload[6]);
+  assertEqual(0x08, example_frame.payload[7]);
 }
 
 unittest_main()
