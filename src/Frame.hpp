@@ -95,7 +95,7 @@ class Frame {
      *
      * @param _use_crc Enum indicating whether to use CRC calculations.
      */
-    Frame(crc_settings _use_crc) : arbitration_id{0x00}, dlc{8}, use_crc{_use_crc} explicit {}
+    explicit Frame(crc_settings _use_crc) : arbitration_id{0x00}, dlc{8}, use_crc{_use_crc} {}
 
      /**
      * Constructs a new Frame object.
