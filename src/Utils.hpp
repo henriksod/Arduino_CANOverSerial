@@ -52,7 +52,7 @@
         // own implementations.
         #define SERIALCAN_HAS_INCLUDE(x) 0
     #else
-        #error "Compiler does not support __has_include, please report a bug against the SerialCAN library about this."
+        #error "Compiler does not support __has_include."
     #endif
 #else
     #define SERIALCAN_HAS_INCLUDE(x) __has_include(x)
