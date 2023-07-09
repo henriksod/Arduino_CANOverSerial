@@ -8,6 +8,6 @@
 
 A library that lets you send data over Serial using the CAN communication protocol, with supported end-to-end protection to ensure the data integrity over high speeds.
 
-This library is compatible with the [python-can](https://github.com/hardbyte/python-can) library. See (CAN over Serial)[https://python-can.readthedocs.io/en/stable/interfaces/serial.html].
+This library is compatible with the [python-can](https://github.com/hardbyte/python-can) library. See [CAN over Serial](https://python-can.readthedocs.io/en/stable/interfaces/serial.html).
 
 Made by Henrik Söderlund
